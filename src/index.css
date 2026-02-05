@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #0F172A;
+  --color-secondary: #334155;
+  --color-accent: #38BDF8;
+}
+
+/* 
+  Tailwind v4 Setup 
+  If using the pure v4 method via @import "tailwindcss"; we don't strictly need tailwind.config.js for content scanning,
+  but maintaining the file for compat or specific theme config is fine.
+  However, sticking to one method is best. 
+  I'll use the @import "tailwindcss"; method which is the v4 default.
+*/
