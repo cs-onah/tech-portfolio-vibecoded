@@ -1,4 +1,4 @@
-# Onah's Portfolio ✨ <Vibe Coded>
+# Tech Portfolios <Vibe Coded> ✨
 
 This repository contains a collection of **vibe-coded** website templates. It serves as an experimental playground for testing the front-end design capabilities of modern AI models and pushing the boundaries of generative UI.
 
@@ -39,7 +39,7 @@ To achieve high-fidelity designs, we utilize specialized skills for AI agents.
 npx skills add [https://github.com/anthropics/skills](https://github.com/anthropics/skills) --skill frontend-design
 ```
 
-Note: After installation, ensure you select the specific agents you want to grant access to this skill.
+Note: During installation, ensure you select the specific agents you want to grant access to this skill.
 
 2. Customizing the Content
    You can edit the content.md file with your own portfolio information, following the existing template structure.
