@@ -1,201 +1,219 @@
-import { useState } from "react";
+import { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { profile, projects, skills, socialLinks } from "../../data";
+import { ChevronDown } from "lucide-react";
 
-const Section = ({
-  children,
-  className = "",
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) => (
-  <section className={`py-32 px-6 md:px-20 max-w-7xl mx-auto ${className}`}>
-    {children}
-  </section>
-);
+const ParallaxImage = ({ src, alt }: { src: string; alt: string }) => {
+  return (
+    <div className="w-full h-full overflow-hidden">
+      <motion.img
+        src={src}
+        alt={alt}
+        className="w-full h-full object-cover"
+        initial={{ scale: 1.2 }}
+        whileInView={{ scale: 1 }}
+        transition={{ duration: 1.5, ease: "easeOut" }}
+      />
+    </div>
+  );
+};
 
-const Line = () => <div className="h-px bg-stone-300 w-full my-8"></div>;
+export default function Cinematic() {
+  const containerRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"],
+  });
 
-export default function Design5() {
-  const [hoveredProject, setHoveredProject] = useState<string | null>(null);
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
+  const heroScale = useTransform(scrollYProgress, [0, 0.2], [1, 0.8]);
 
   return (
-    <div className="bg-[#EBEBE3] min-h-screen font-serif text-[#1A1A1A] selection:bg-[#FF3333] selection:text-white">
-      {/* Navigation */}
-      <nav className="fixed top-0 w-full p-6 flex justify-between items-center z-50 mix-blend-difference text-[#EBEBE3]">
-        <div className="flex items-center gap-2">
-          {/* Logo might be too small/detailed for mix-blend-diff, text often better. Keeping text as primary but can add logo */}
-          <span className="text-xl font-bold tracking-widest italic">
-            Ebuka/Folio
-          </span>
-        </div>
-        <div className="flex gap-4 text-sm uppercase tracking-widest">
-          <span>(Menu)</span>
+    <div
+      ref={containerRef}
+      className="bg-black text-white min-h-screen font-sans selection:bg-white selection:text-black overflow-x-hidden"
+    >
+      {/* Navigation - Minimal */}
+      <nav className="fixed top-0 w-full p-8 flex justify-between items-center z-50 mix-blend-difference">
+        <span className="text-sm tracking-[0.5em] uppercase">Ebuka — Onah</span>
+        <div className="flex gap-8 text-xs font-bold tracking-widest uppercase">
+          <a href="#work" className="hover:opacity-50 transition-opacity">
+            Work
+          </a>
+          <a href="#contact" className="hover:opacity-50 transition-opacity">
+            Contact
+          </a>
         </div>
       </nav>
 
-      {/* Hero */}
-      <div className="min-h-screen flex flex-col justify-between p-6 md:p-12 pt-32 relative">
-        <div className="flex flex-col md:flex-row justify-between md:items-end z-10">
-          <h1 className="text-[12vw] leading-[0.85] tracking-tighter mix-blend-overlay opacity-80">
-            CREATIVE
-            <br />
-            <span className="ml-[10vw]">DEVELOPER</span>
-          </h1>
-          <div className="mb-4 md:mb-10 text-right">
-            <p className="text-sm font-sans uppercase tracking-widest mb-2 font-bold">
-              ( Role )
-            </p>
-            <p className="text-xl italic">
-              Mobile Software Developer
-              <br />& Project Manager
-            </p>
-            <div className="mt-4 flex justify-end">
-              <img
-                src={profile.avatar}
-                alt="Profile"
-                className="w-24 h-24 grayscale border border-stone-400 p-1"
-              />
-            </div>
-          </div>
+      {/* Hero Section */}
+      <section className="h-screen relative flex items-center justify-center overflow-hidden">
+        <motion.div
+          style={{ opacity: heroOpacity, scale: heroScale }}
+          className="text-center z-10 p-4"
+        >
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.5 }}
+            className="text-sm md:text-base tracking-[0.8em] uppercase mb-8 text-neutral-400"
+          >
+            Portfolio
+          </motion.p>
+          <motion.h1
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.8 }}
+            className="text-6xl md:text-9xl font-light tracking-tighter mb-8"
+          >
+            IMMERSIVE
+          </motion.h1>
+          <motion.div
+            initial={{ width: 0 }}
+            animate={{ width: "100px" }}
+            transition={{ duration: 1, delay: 1.5 }}
+            className="h-px bg-white mx-auto"
+          ></motion.div>
+        </motion.div>
+
+        {/* Background Video/Image Placeholder */}
+        <div className="absolute inset-0 z-0 opacity-20">
+          <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black"></div>
+          <img
+            src={profile.avatar}
+            className="w-full h-full object-cover grayscale brightness-50"
+            alt="background"
+          />
         </div>
 
-        <div className="grid md:grid-cols-12 gap-6 mt-20 items-end z-10">
-          <div className="md:col-span-4">
-            <p className="text-lg leading-relaxed font-sans text-stone-600 max-w-sm">
-              {profile.tagline}
-            </p>
-          </div>
-          <div className="md:col-span-8 flex justify-end gap-12">
-            {socialLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.url}
-                target="_blank"
-                rel="noreferrer"
-                className="text-xl italic hover:text-[#FF3333] transition-colors border-b border-transparent hover:border-[#FF3333]"
+        <motion.div
+          animate={{ y: [0, 10, 0] }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute bottom-10 left-1/2 -translate-x-1/2 opacity-50"
+        >
+          <ChevronDown size={32} />
+        </motion.div>
+      </section>
+
+      {/* Introduction */}
+      <section className="min-h-[60vh] flex items-center justify-center p-8 md:p-32 relative">
+        <div className="max-w-4xl text-center">
+          <motion.p
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 1 }}
+            className="text-2xl md:text-4xl font-light leading-relaxed text-neutral-300"
+          >
+            "{profile.tagline}"
+          </motion.p>
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 1, delay: 0.5 }}
+            className="mt-12 flex flex-wrap justify-center gap-4 text-xs tracking-widest uppercase text-neutral-500"
+          >
+            {skills.core.map((skill) => (
+              <span
+                key={skill}
+                className="border border-neutral-800 px-4 py-2 rounded-full"
               >
-                {link.name}
-              </a>
+                {skill}
+              </span>
             ))}
-          </div>
+          </motion.div>
         </div>
+      </section>
+
+      {/* Projects - Horizontal / Parallax */}
+      <div id="work" className="bg-neutral-900 py-32">
+        {projects.map((project, index) => (
+          <div
+            key={project.id}
+            className="min-h-screen flex items-center justify-center sticky top-0 bg-neutral-900 border-t border-white/5"
+          >
+            <div className="container mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+              <motion.div
+                initial={{ opacity: 0, x: -50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 1 }}
+                className="order-2 md:order-1"
+              >
+                <span className="text-xs text-neutral-500 tracking-[0.2em] mb-4 block">
+                  0{index + 1} — {project.tags[0]}
+                </span>
+                <h2 className="text-5xl md:text-7xl font-light mb-8">
+                  {project.title}
+                </h2>
+                <p className="text-neutral-400 text-lg leading-relaxed mb-8 max-w-md">
+                  {project.description}
+                </p>
+                <div className="flex gap-8">
+                  {project.links.map((link) => (
+                    <a
+                      key={link.label}
+                      href={link.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-sm hover:text-white/50 transition-colors uppercase tracking-widest border-b border-white pb-1"
+                    >
+                      {link.label}
+                    </a>
+                  ))}
+                </div>
+              </motion.div>
+
+              <motion.div
+                className="order-1 md:order-2 h-[50vh] md:h-[70vh] bg-neutral-800 relative overflow-hidden"
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 1 }}
+              >
+                <ParallaxImage src={project.assets.cover} alt={project.title} />
+              </motion.div>
+            </div>
+          </div>
+        ))}
       </div>
 
-      <Line />
-
-      {/* Selected Work - List View with Hover Image */}
-      <Section className="relative">
-        <div className="flex items-baseline justify-between mb-20">
-          <h2 className="text-6xl md:text-8xl italic">
-            Selected
-            <br />
-            Works
-          </h2>
-          <span className="text-sm font-sans uppercase tracking-widest text-[#FF3333] font-bold">
-            ( 01 — 0{projects.length} )
-          </span>
-        </div>
-
-        <div className="space-y-0 relative z-20">
-          {projects.map((project, index) => (
-            <div
-              key={project.id}
-              className="group border-t border-stone-300 py-12 hover:bg-[#E1E1D9] transition-colors cursor-pointer relative"
-              onMouseEnter={() => setHoveredProject(project.assets.cover)}
-              onMouseLeave={() => setHoveredProject(null)}
-            >
-              <div className="grid md:grid-cols-12 gap-8 items-baseline">
-                <div className="md:col-span-1 text-sm font-sans text-stone-400">
-                  0{index + 1}
-                </div>
-                <div className="md:col-span-5">
-                  <h3 className="text-4xl md:text-5xl group-hover:italic transition-all duration-300">
-                    {project.title}
-                  </h3>
-                </div>
-                <div className="md:col-span-4">
-                  <p className="font-sans text-stone-600 text-sm leading-relaxed max-w-xs">
-                    {project.description}
-                  </p>
-                </div>
-                <div className="md:col-span-2 text-right">
-                  <div className="flex flex-col items-end gap-1">
-                    {project.links.map((link) => (
-                      <a
-                        key={link.label}
-                        href={link.url}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-xs font-sans uppercase tracking-widest hover:underline decoration-[#FF3333]"
-                      >
-                        [{link.label}]
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-          <div className="border-t border-stone-300"></div>
-        </div>
-
-        {/* Floating Image Preview on Hover */}
-        <div
-          className={`fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none transition-opacity duration-300 z-10 ${hoveredProject ? "opacity-30 md:opacity-100" : "opacity-0"}`}
-        >
-          {hoveredProject && (
-            <img
-              src={hoveredProject}
-              alt="Preview"
-              className="max-w-[500px] max-h-[600px] object-cover grayscale shadow-2xl rotate-3"
-            />
-          )}
-        </div>
-      </Section>
-
-      {/* Skills - Editorial Grid */}
-      <Section className="bg-[#1A1A1A] text-[#EBEBE3] !max-w-full !px-6 md:!px-12 !py-32">
-        <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-20">
-          <div>
-            <h2 className="text-5xl italic mb-12 text-[#FF3333]">
-              Competencies
-            </h2>
-            <div className="flex flex-wrap gap-x-8 gap-y-4 text-2xl font-light opacity-80">
-              {skills.core.map((skill) => (
-                <span key={skill}>{skill}</span>
-              ))}
-            </div>
-          </div>
-
-          <div className="font-sans">
-            <p className="text-stone-400 uppercase tracking-widest mb-8 text-sm font-bold">
-              Tools & Concepts
-            </p>
-            <div className="grid grid-cols-2 gap-x-8 gap-y-2 text-sm text-stone-300">
-              {skills.tools.slice(0, 10).map((tool) => (
-                <div key={tool} className="border-b border-stone-800 py-2">
-                  {tool}
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </Section>
-
       {/* Footer */}
-      <footer className="h-screen flex flex-col justify-center items-center text-center p-6 relative">
-        <p className="font-sans uppercase tracking-widest text-[#FF3333] mb-8 font-bold text-sm">
-          ( Contact )
-        </p>
+      <footer
+        id="contact"
+        className="min-h-screen flex flex-col justify-center items-center relative z-10 bg-black"
+      >
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-neutral-800/20 to-black pointer-events-none"></div>
+
+        <motion.h2
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+          className="text-4xl md:text-6xl font-light mb-12 text-center"
+        >
+          Create Something
+          <br />
+          Timeless.
+        </motion.h2>
+
         <a
           href="mailto:hello@example.com"
-          className="text-[8vw] leading-none hover:italic transition-all duration-300 cursor-pointer"
+          className="px-12 py-4 border border-white/20 hover:bg-white hover:text-black transition-all duration-500 uppercase tracking-widest text-sm mb-24"
         >
-          Let’s Talk
+          Get in Touch
         </a>
-        <div className="absolute bottom-12 w-full flex justify-between px-12 font-sans text-xs uppercase tracking-widest text-stone-500">
-          <span>© {new Date().getFullYear()}</span>
-          <span>Scroll to Top</span>
+
+        <div className="flex gap-12 text-sm text-neutral-500 uppercase tracking-widest">
+          {socialLinks.map((link) => (
+            <a
+              key={link.name}
+              href={link.url}
+              className="hover:text-white transition-colors"
+            >
+              {link.name}
+            </a>
+          ))}
+        </div>
+
+        <div className="absolute bottom-8 text-neutral-800 text-xs">
+          © {new Date().getFullYear()} Cinematic Portfolio. All rights reserved.
         </div>
       </footer>
     </div>

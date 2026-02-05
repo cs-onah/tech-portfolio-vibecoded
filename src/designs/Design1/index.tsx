@@ -1,270 +1,239 @@
-import { motion } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
+import React, { useState, useEffect, useRef } from "react";
 import { profile, projects, skills, socialLinks } from "../../data";
 
-const Section = ({
-  children,
-  className = "",
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) => (
-  <section className={`py-20 px-6 md:px-20 max-w-6xl mx-auto ${className}`}>
-    {children}
-  </section>
-);
+type CommandHistory = {
+  command: string;
+  output: React.ReactNode;
+};
 
-const Nav = () => (
-  <nav className="fixed top-0 left-0 right-0 p-6 md:px-12 flex justify-between items-center bg-white/80 backdrop-blur-sm z-50">
-    <a
-      href="#"
-      className="flex items-center gap-2 font-bold text-xl tracking-tight text-slate-900"
-    >
-      <img src={profile.logo} alt="Logo" className="h-8 w-auto" />
-      <span>Ebuka.</span>
-    </a>
-    <div className="flex gap-6 text-sm font-medium text-slate-500">
-      <a href="#about" className="hover:text-slate-900 transition-colors">
-        About
-      </a>
-      <a href="#projects" className="hover:text-slate-900 transition-colors">
-        Work
-      </a>
-      <a href="#contact" className="hover:text-slate-900 transition-colors">
-        Contact
-      </a>
-    </div>
-  </nav>
-);
+const Terminal = () => {
+  const [input, setInput] = useState("");
+  const [history, setHistory] = useState<CommandHistory[]>([
+    {
+      command: "init",
+      output:
+        'Welcome to EbukaFolio v2.0. Type "help" to see available commands.',
+    },
+  ]);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const bottomRef = useRef<HTMLDivElement>(null);
 
-const Hero = () => (
-  <Section className="min-h-screen flex flex-col pt-32 md:pt-40">
-    <div className="grid md:grid-cols-2 gap-12 items-center">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-      >
-        <h1 className="text-5xl md:text-7xl font-light text-slate-900 leading-tight mb-8">
-          Mobile Developer & <br />
-          <span className="font-semibold text-slate-800">
-            IT Project Manager.
-          </span>
-        </h1>
-        <p className="text-xl md:text-2xl text-slate-500 max-w-2xl font-light">
-          {profile.tagline}
-        </p>
-        <div className="mt-12 flex gap-4">
-          {socialLinks.map((link) => (
-            <a
-              key={link.name}
-              href={link.url}
-              target="_blank"
-              rel="noreferrer"
-              className="p-3 rounded-full bg-slate-50 hover:bg-slate-100 text-slate-600 hover:text-slate-900 transition-colors"
-            >
-              <link.icon size={20} />
-            </a>
-          ))}
-        </div>
-      </motion.div>
+  useEffect(() => {
+    if (bottomRef.current) {
+      bottomRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [history]);
 
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.8, delay: 0.2 }}
-        className="flex justify-center md:justify-end"
-      >
-        <div className="relative">
-          <div className="absolute inset-0 bg-blue-100 rounded-full blur-3xl opacity-30 animate-pulse"></div>
-          <img
-            src={profile.avatar}
-            alt={profile.name}
-            className="relative w-64 h-64 md:w-80 md:h-80 object-cover rounded-full border-4 border-white shadow-xl"
-          />
-        </div>
-      </motion.div>
-    </div>
-  </Section>
-);
+  const handleCommand = (e: React.FormEvent) => {
+    e.preventDefault();
+    const cmd = input.trim().toLowerCase();
+    let output: React.ReactNode = "";
 
-const About = () => (
-  <Section className="bg-slate-50 rounded-3xl my-10">
-    <div className="grid md:grid-cols-2 gap-12 items-center">
-      <div>
-        <h2
-          className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-6"
-          id="about"
-        >
-          About Me
-        </h2>
-        <p className="text-lg text-slate-700 leading-relaxed mb-6">
-          {profile.about}
-        </p>
-        <a
-          href={profile.resumeLink}
-          target="_blank"
-          rel="noreferrer"
-          className="inline-flex items-center gap-2 text-slate-900 font-semibold border-b border-slate-900 pb-1 hover:text-blue-600 hover:border-blue-600 transition-all"
-        >
-          View Resume <ArrowUpRight size={16} />
-        </a>
-      </div>
+    switch (cmd) {
+      case "help":
+        output = (
+          <div className="space-y-1 text-green-400">
+            <p>Available commands:</p>
+            <p className="pl-4">
+              <span className="text-yellow-400 font-bold">about</span> - Display
+              profile info
+            </p>
+            <p className="pl-4">
+              <span className="text-yellow-400 font-bold">skills</span> - List
+              technical skills
+            </p>
+            <p className="pl-4">
+              <span className="text-yellow-400 font-bold">projects</span> - Show
+              selected works
+            </p>
+            <p className="pl-4">
+              <span className="text-yellow-400 font-bold">social</span> -
+              Connect with me
+            </p>
+            <p className="pl-4">
+              <span className="text-yellow-400 font-bold">clear</span> - Clear
+              terminal
+            </p>
+            <p className="pl-4">
+              <span className="text-yellow-400 font-bold">whoami</span> -
+              Current user
+            </p>
+          </div>
+        );
+        break;
+      case "about":
+        output = (
+          <div className="space-y-4 max-w-2xl">
+            <div className="flex gap-4 items-start">
+              <img
+                src={profile.avatar}
+                alt="Me"
+                className="w-24 h-24 border-2 border-green-500 object-cover"
+              />
+              <div>
+                <p className="text-xl font-bold text-green-300">
+                  Name: {profile.name}
+                </p>
+                <p className="text-green-300">Role: {profile.role}</p>
+                <p className="mt-2 text-green-100">{profile.about}</p>
+                <p className="mt-2 text-green-400 italic">
+                  "{profile.tagline}"
+                </p>
+              </div>
+            </div>
+          </div>
+        );
+        break;
+      case "skills":
+        output = (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl">
+            <div>
+              <p className="text-yellow-400 font-bold mb-2 underline">
+                Core Stack:
+              </p>
+              <ul className="list-disc pl-5">
+                {skills.core.map((s) => (
+                  <li key={s}>{s}</li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <p className="text-yellow-400 font-bold mb-2 underline">
+                Concepts:
+              </p>
+              <ul className="list-disc pl-5">
+                {skills.concepts.map((s) => (
+                  <li key={s}>{s}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        );
+        break;
+      case "projects":
+        output = (
+          <div className="space-y-8">
+            {projects.map((p) => (
+              <div key={p.id} className="border-l-2 border-green-500 pl-4 py-2">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-yellow-400 font-bold text-lg">
+                    {p.title}
+                  </span>
+                  <span className="text-xs bg-green-900 text-green-300 px-2 py-0.5 rounded">
+                    {p.tags[0]}
+                  </span>
+                </div>
+                <div className="flex flex-col md:flex-row gap-4">
+                  <img
+                    src={p.assets.cover}
+                    alt={p.title}
+                    className="w-48 h-32 object-cover border border-green-800 opacity-80 hover:opacity-100 transition-opacity"
+                  />
+                  <div>
+                    <p className="mb-2 text-green-100">{p.description}</p>
+                    <div className="flex gap-3">
+                      {p.links.map((l) => (
+                        <a
+                          key={l.label}
+                          href={l.url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-blue-400 hover:text-blue-300 hover:underline"
+                        >
+                          [{l.label}]
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        );
+        break;
+      case "social":
+        output = (
+          <div className="flex gap-6 flex-wrap">
+            {socialLinks.map((l) => (
+              <a
+                key={l.name}
+                href={l.url}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center gap-2 text-cyan-400 hover:text-cyan-300"
+              >
+                <l.icon size={16} /> {l.name}
+              </a>
+            ))}
+          </div>
+        );
+        break;
+      case "clear":
+        setHistory([]);
+        setInput("");
+        return;
+      case "whoami":
+        output = "guest_user@internet";
+        break;
+      default:
+        output = `Command not found: ${cmd}. Type "help" for a list of commands.`;
+    }
 
-      <div>
-        <h2 className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-6">
-          Skills
-        </h2>
-        <div className="flex flex-wrap gap-2">
-          {skills.core.map((skill) => (
-            <span
-              key={skill}
-              className="px-4 py-2 bg-white rounded-md shadow-sm text-sm text-slate-600 border border-slate-100"
-            >
-              {skill}
-            </span>
-          ))}
-          {skills.concepts.slice(0, 5).map((skill) => (
-            <span
-              key={skill}
-              className="px-4 py-2 bg-white rounded-md shadow-sm text-sm text-slate-600 border border-slate-100"
-            >
-              {skill}
-            </span>
-          ))}
-        </div>
-      </div>
-    </div>
-  </Section>
-);
+    setHistory([...history, { command: cmd, output }]);
+    setInput("");
+  };
 
-const ProjectCard = ({ project }: { project: any }) => (
-  <motion.div whileHover={{ y: -5 }} className="group mb-12">
-    <div className="grid md:grid-cols-5 gap-8 bg-white p-8 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
-      {/* Text Content */}
-      <div className="md:col-span-3 order-2 md:order-1">
-        <div className="flex items-center gap-3 mb-4">
-          {project.assets.logo && (
-            <img
-              src={project.assets.logo}
-              alt={`${project.title} logo`}
-              className="w-8 h-8 object-contain rounded-md"
-            />
-          )}
-          <span className="text-xs font-bold uppercase tracking-widest text-blue-600">
-            {project.tags[0]}
-          </span>
-          <div className="h-px bg-slate-200 flex-grow"></div>
-        </div>
-        <h3 className="text-2xl font-bold text-slate-900 mb-3 group-hover:text-blue-600 transition-colors">
-          {project.title}
-        </h3>
-        <p className="text-slate-600 mb-6 leading-relaxed">
-          {project.description}
-        </p>
-        <div className="flex flex-wrap gap-4">
-          {project.links.map((link: any) => (
-            <a
-              key={link.label}
-              href={link.url}
-              target="_blank"
-              rel="noreferrer"
-              className="text-sm font-medium text-slate-500 hover:text-slate-900 flex items-center gap-1"
-            >
-              {link.label} <ArrowUpRight size={14} />
-            </a>
-          ))}
-        </div>
-      </div>
-
-      {/* Image placeholder */}
-      <div className="md:col-span-2 order-1 md:order-2 bg-slate-100 rounded-xl overflow-hidden min-h-[200px] flex items-center justify-center relative">
-        <img
-          src={project.assets.cover}
-          alt={project.title}
-          className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-        />
-      </div>
-    </div>
-  </motion.div>
-);
-
-const Projects = () => (
-  <Section>
-    <div className="flex justify-between items-end mb-16">
-      <h2
-        className="text-3xl md:text-4xl font-light text-slate-900"
-        id="projects"
-      >
-        Selected Work
-      </h2>
-      <span className="hidden md:block text-slate-400 text-sm font-mono">
-        {projects.length} PROJECTS
-      </span>
-    </div>
-
-    <div>
-      {projects.map((project) => (
-        <ProjectCard key={project.id} project={project} />
-      ))}
-    </div>
-  </Section>
-);
-
-const Footer = () => (
-  <footer className="bg-slate-900 text-white py-20 px-6 md:px-20" id="contact">
-    <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12">
-      <div>
-        <h2 className="text-4xl font-light mb-6">Let's work together.</h2>
-        <p className="text-slate-400 mb-8 max-w-md">
-          I'm currently available for freelance projects and open to new
-          opportunities.
-        </p>
-        <a
-          href={`mailto:hello@example.com`}
-          className="inline-block px-8 py-4 bg-white text-slate-900 font-bold rounded-full hover:bg-blue-50 transition-colors"
-        >
-          Get in Touch
-        </a>
-      </div>
-
-      <div className="flex flex-col justify-end items-start md:items-end">
-        <div className="flex gap-6 mb-8">
-          <a
-            href={profile.blogLink}
-            className="text-slate-400 hover:text-white transition-colors"
-          >
-            Medium
-          </a>
-          <a
-            href="https://linkedin.com/in/csonah"
-            className="text-slate-400 hover:text-white transition-colors"
-          >
-            LinkedIn
-          </a>
-          <a
-            href="https://x.com/cs_onah"
-            className="text-slate-400 hover:text-white transition-colors"
-          >
-            Twitter
-          </a>
-        </div>
-        <p className="text-slate-600 text-sm">
-          © {new Date().getFullYear()} Ebuka. All rights reserved.
-        </p>
-      </div>
-    </div>
-  </footer>
-);
-
-export default function Design1() {
   return (
-    <div className="bg-white min-h-screen selection:bg-blue-100 selection:text-blue-900">
-      <Nav />
-      <Hero />
-      <About />
-      <Projects />
-      <Footer />
+    <div
+      className="min-h-screen bg-black text-green-500 font-mono p-4 md:p-8 selection:bg-green-900 selection:text-white"
+      onClick={() => inputRef.current?.focus()}
+    >
+      <div className="max-w-4xl mx-auto border border-green-800 p-2 min-h-[90vh] rounded bg-black/90 shadow-[0_0_20px_rgba(0,255,0,0.1)] relative overflow-hidden">
+        {/* CRT Scanline Effect */}
+        <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] z-10 bg-[length:100%_2px,3px_100%]"></div>
+
+        {/* Header */}
+        <div className="border-b border-green-800 pb-2 mb-4 flex justify-between items-center opacity-70 px-2">
+          <span>ebuka_portfolio.exe</span>
+          <span>v2.0.0</span>
+        </div>
+
+        {/* Output */}
+        <div className="space-y-4 px-2 relative z-20">
+          {history.map((item, idx) => (
+            <div key={idx} className="break-words">
+              <div className="flex gap-2 text-blue-400 mb-1">
+                <span>root@portfolio:~$</span>
+                <span className="text-green-500">{item.command}</span>
+              </div>
+              <div className="text-green-100/90 leading-relaxed ml-2 md:ml-4">
+                {item.output}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Input Line */}
+        <form
+          onSubmit={handleCommand}
+          className="mt-4 flex gap-2 px-2 relative z-20"
+        >
+          <span className="text-blue-400 text-nowrap">root@portfolio:~$</span>
+          <input
+            ref={inputRef}
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            className="bg-transparent border-none outline-none text-green-500 flex-grow caret-green-500"
+            autoFocus
+            spellCheck={false}
+            autoComplete="off"
+          />
+        </form>
+        <div ref={bottomRef}></div>
+      </div>
     </div>
   );
-}
+};
+
+export default Terminal;

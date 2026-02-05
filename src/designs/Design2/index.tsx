@@ -1,269 +1,239 @@
 import { profile, projects, skills, socialLinks } from "../../data";
+import { motion } from "framer-motion";
 
-const BrutalBtn = ({
-  children,
-  href,
-  className = "",
-}: {
-  children: React.ReactNode;
-  href?: string;
-  className?: string;
-}) => {
-  const baseClass = `inline-flex items-center justify-center border-4 border-black bg-white px-6 py-3 font-bold text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all cursor-pointer ${className}`;
-
-  if (href) {
-    return (
-      <a href={href} target="_blank" rel="noreferrer" className={baseClass}>
-        {children}
-      </a>
-    );
-  }
-
-  return <button className={baseClass}>{children}</button>;
-};
-
-const Nav = () => (
-  <nav className="border-b-4 border-black bg-yellow-400 p-6 flex justify-between items-center sticky top-0 z-50">
-    <a
-      href="#"
-      className="flex items-center gap-2 text-3xl font-black uppercase tracking-tighter hover:underline decoration-4 underline-offset-4"
-    >
-      <img
-        src={profile.logo}
-        alt="Logo"
-        className="h-10 w-10 border-2 border-black"
-      />
-      Ebuka
-    </a>
-    <div className="hidden md:flex gap-8 font-bold uppercase tracking-widest">
-      <a
-        href="#about"
-        className="hover:bg-black hover:text-white px-2 py-1 transition-colors"
-      >
-        About
-      </a>
-      <a
-        href="#work"
-        className="hover:bg-black hover:text-white px-2 py-1 transition-colors"
-      >
-        Work
-      </a>
-      <a
-        href="#contact"
-        className="hover:bg-black hover:text-white px-2 py-1 transition-colors"
-      >
-        Contact
-      </a>
-    </div>
-  </nav>
-);
-
-const Hero = () => (
-  <header className="bg-purple-500 border-black border-b-4 min-h-[80vh] flex flex-col items-center justify-center text-center p-8 relative overflow-hidden">
-    {/* Background Avatar Element */}
-    <img
-      src={profile.avatar}
-      alt=""
-      className="absolute -left-20 top-20 w-64 h-64 grayscale opacity-20 rotate-[-12deg]"
-    />
-    <img
-      src={profile.avatar}
-      alt=""
-      className="absolute -right-20 bottom-20 w-64 h-64 grayscale opacity-20 rotate-[12deg]"
-    />
-
-    <div className="bg-white border-4 border-black p-8 md:p-12 shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] max-w-4xl rotate-1 hover:rotate-0 transition-transform duration-300 z-10">
-      <div className="flex justify-center mb-6">
-        <img
-          src={profile.avatar}
-          alt="Profile"
-          className="w-32 h-32 rounded-full border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] object-cover"
-        />
-      </div>
-      <h1 className="text-6xl md:text-8xl font-black uppercase leading-[0.85] mb-6">
-        Mobile
-        <br />
-        Developer
-      </h1>
-      <div className="bg-black h-2 w-full mb-6"></div>
-      <p className="text-xl md:text-2xl font-bold font-mono mb-8">
-        {profile.tagline}
-      </p>
-      <div className="flex flex-wrap justify-center gap-4">
-        {socialLinks.map((link) => (
-          <BrutalBtn key={link.name} href={link.url} className="text-sm">
-            {link.name}
-          </BrutalBtn>
-        ))}
-      </div>
-    </div>
-  </header>
-);
-
-const Marquee = ({ text }: { text: string }) => (
-  <div className="border-b-4 border-black bg-black text-white overflow-hidden py-4 whitespace-nowrap">
-    <div className="animate-marquee inline-block">
-      {[...Array(10)].map((_, i) => (
-        <span key={i} className="mx-8 font-black text-4xl uppercase font-mono">
-          {text}
-        </span>
-      ))}
-    </div>
-  </div>
-);
-
-const Skills = () => (
-  <div className="border-b-4 border-black bg-green-400 grid md:grid-cols-2">
-    <div className="p-12 border-b-4 md:border-b-0 md:border-r-4 border-black">
-      <h2 className="text-5xl font-black uppercase mb-8">Core Tech</h2>
-      <ul className="space-y-4 font-mono font-bold text-xl">
-        {skills.core.map((skill) => (
-          <li key={skill} className="flex items-center gap-4">
-            <span className="w-6 h-6 bg-black block"></span>
-            {skill}
-          </li>
-        ))}
-      </ul>
-    </div>
-    <div className="p-12 flex flex-col justify-between">
-      <div>
-        <h2 className="text-5xl font-black uppercase mb-8">Concepts</h2>
-        <div className="flex flex-wrap gap-3">
-          {skills.concepts.map((skill) => (
-            <span
-              key={skill}
-              className="border-2 border-black bg-white px-3 py-1 font-bold text-sm shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"
-            >
-              {skill}
-            </span>
-          ))}
-        </div>
-      </div>
-      <div className="mt-12 bg-white border-4 border-black p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
-        <h3 className="font-black uppercase text-xl mb-4">Tools of Choice</h3>
-        <p className="font-mono text-sm leading-relaxed">
-          {skills.tools.join(" / ")}
-        </p>
-      </div>
-    </div>
-  </div>
-);
-
-const Projects = () => (
-  <div
-    className="bg-slate-100 border-b-4 border-black py-20 px-6 md:px-20"
-    id="work"
-  >
-    <h2 className="text-6xl md:text-8xl font-black uppercase mb-20 text-center stroke-text-black">
-      Hard Work
-    </h2>
-
-    <div className="grid gap-16 max-w-5xl mx-auto">
-      {projects.map((project, idx) => (
-        <div
-          key={project.id}
-          className={`bg-white border-4 border-black p-0 shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] flex flex-col md:flex-row ${idx % 2 === 1 ? "md:flex-row-reverse" : ""}`}
-        >
-          <div className="md:w-1/2 min-h-[300px] border-b-4 md:border-b-0 md:border-r-4 border-black bg-yellow-200 flex items-center justify-center group overflow-hidden relative">
-            <img
-              src={project.assets.cover}
-              alt={project.title}
-              className="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
-            />
-            <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-10 transition-opacity"></div>
-            {/* Logo Overlay */}
-            <div className="absolute bottom-4 right-4 bg-white border-2 border-black p-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-              <img
-                src={project.assets.logo}
-                alt=""
-                className="w-10 h-10 object-contain"
-              />
-            </div>
-          </div>
-          <div className="md:w-1/2 p-8 md:p-12 flex flex-col justify-center">
-            <div className="mb-4">
-              {project.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="inline-block bg-black text-white text-xs font-bold px-2 py-1 mr-2 uppercase mb-2"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-            <h3 className="text-4xl font-black uppercase mb-4 leading-none">
-              {project.title}
-            </h3>
-            <p className="font-serif text-lg leading-relaxed mb-8 border-l-4 border-yellow-400 pl-4 font-bold">
-              {project.description}
-            </p>
-            <div className="flex gap-4">
-              {project.links.map((link: any) => (
-                <BrutalBtn
-                  key={link.label}
-                  href={link.url}
-                  className="text-sm px-4 py-2"
-                >
-                  {link.label}
-                </BrutalBtn>
-              ))}
-            </div>
-          </div>
-        </div>
-      ))}
-    </div>
-  </div>
-);
-
-const Footer = () => (
-  <footer className="bg-black text-white py-20 px-6 text-center" id="contact">
-    <h2 className="text-6xl md:text-8xl font-black uppercase mb-8 leading-none hover:text-yellow-400 transition-colors cursor-pointer">
-      Get In Touch
-    </h2>
-    <div className="flex flex-col items-center gap-8">
-      <BrutalBtn
-        href={`mailto:hello@example.com`}
-        className="bg-white text-black hover:bg-yellow-400"
-      >
-        Send an Email
-      </BrutalBtn>
-      <div className="flex gap-8 text-2xl font-bold uppercase mt-12">
-        <a
-          href={profile.blogLink}
-          className="hover:underline hover:text-yellow-400"
-        >
-          Blog
-        </a>
-        <a
-          href="https://linkedin.com/in/csonah"
-          className="hover:underline hover:text-yellow-400"
-        >
-          LinkedIn
-        </a>
-        <a
-          href="https://x.com/cs_onah"
-          className="hover:underline hover:text-yellow-400"
-        >
-          Twitter
-        </a>
-      </div>
-      <p className="mt-20 font-mono text-sm text-gray-500">
-        NO COOKIES. NO TRACKING. JUST CODE.
-      </p>
-    </div>
-  </footer>
-);
-
-export default function Design2() {
+const SwissLayout = () => {
   return (
-    <div className="bg-slate-50 min-h-screen font-sans">
-      <Nav />
-      <Hero />
-      <Marquee text=" • AVAILABLE FOR HIRE • BUILD FAST • SHIP FASTER • BREAK THINGS " />
-      <Skills />
-      <Marquee text=" • FLUTTER • REACT • TYPESCRIPT • SWIFT • KOTLIN • " />
-      <Projects />
-      <Footer />
+    <div className="bg-[#F2F2F2] min-h-screen text-[#1A1A1A] font-sans selection:bg-[#E63946] selection:text-white overflow-x-hidden">
+      {/* Navigation - Fixed Side */}
+      <nav className="fixed left-0 top-0 bottom-0 w-16 md:w-24 border-r-2 border-[#1A1A1A] bg-white z-50 flex flex-col justify-between items-center py-8 hidden md:flex">
+        <div className="text-2xl font-black rotate-[-90deg] whitespace-nowrap mt-12 tracking-tighter">
+          EBUKA.FOLIO
+        </div>
+        <div className="flex flex-col gap-12">
+          <a
+            href="#about"
+            className="font-bold -rotate-90 hover:text-[#E63946] transition-colors"
+          >
+            ABOUT
+          </a>
+          <a
+            href="#work"
+            className="font-bold -rotate-90 hover:text-[#E63946] transition-colors"
+          >
+            WORK
+          </a>
+          <a
+            href="#contact"
+            className="font-bold -rotate-90 hover:text-[#E63946] transition-colors"
+          >
+            CONTACT
+          </a>
+        </div>
+        <div className="mb-4">
+          <div className="w-8 h-8 bg-[#E63946] rounded-full"></div>
+        </div>
+      </nav>
+
+      {/* Mobile Nav */}
+      <nav className="md:hidden fixed top-0 w-full bg-white border-b-2 border-[#1A1A1A] p-4 z-50 flex justify-between items-center">
+        <span className="font-black text-xl tracking-tighter">EBUKA.FOLIO</span>
+        <div className="w-6 h-6 bg-[#E63946] rounded-full"></div>
+      </nav>
+
+      <div className="md:pl-24">
+        {/* Hero Section - Asymmetric Grid */}
+        <header className="min-h-screen grid grid-cols-1 md:grid-cols-12 border-b-2 border-[#1A1A1A]">
+          <div className="md:col-span-8 p-8 md:p-24 flex flex-col justify-center border-b-2 md:border-b-0 md:border-r-2 border-[#1A1A1A] bg-white relative overflow-hidden">
+            <motion.h1
+              initial={{ x: -100, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ duration: 0.8 }}
+              className="text-7xl md:text-9xl font-black leading-[0.8] tracking-tighter z-10"
+            >
+              CREATIVE
+              <br />
+              <span className="text-transparent stroke-text-black stroked">
+                DEVELOPER
+              </span>
+            </motion.h1>
+            <motion.div
+              initial={{ y: 50, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.5 }}
+              className="mt-12 max-w-xl"
+            >
+              <div className="h-2 w-24 bg-[#E63946] mb-6"></div>
+              <p className="text-2xl md:text-3xl font-bold leading-tight">
+                {profile.tagline}
+              </p>
+            </motion.div>
+
+            {/* Graphical Element */}
+            <div className="absolute right-[-10%] bottom-[-10%] w-[50%] h-[50%] bg-[#E63946] rounded-full opacity-10 blur-3xl"></div>
+          </div>
+
+          <div className="md:col-span-4 grid grid-rows-2">
+            <div className="bg-[#E63946] p-8 flex flex-col justify-between text-white border-b-2 border-[#1A1A1A]">
+              <div className="text-6xl font-black opacity-20">01</div>
+              <div>
+                <p className="font-bold uppercase text-sm mb-2 opacity-80">
+                  Specialization
+                </p>
+                <h2 className="text-3xl font-bold leading-none">
+                  Mobile UI/UX
+                  <br />
+                  Engineering
+                </h2>
+              </div>
+            </div>
+            <div className="bg-[#1A1A1A] p-8 flex flex-col justify-between text-white relative group overflow-hidden">
+              <img
+                src={profile.avatar}
+                alt="Profile"
+                className="absolute inset-0 w-full h-full object-cover opacity-50 grayscale group-hover:scale-105 transition-transform duration-700"
+              />
+              <div className="relative z-10">
+                <div className="text-6xl font-black opacity-20 text-white">
+                  02
+                </div>
+              </div>
+              <div className="relative z-10">
+                <p className="font-bold uppercase text-sm mb-2 opacity-80">
+                  Based In
+                </p>
+                <h2 className="text-3xl font-bold leading-none">
+                  Earth,
+                  <br />
+                  Internet
+                </h2>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        {/* Content Grid */}
+        <div className="grid md:grid-cols-2">
+          {/* About / Skills */}
+          <section className="border-b-2 md:border-b-0 md:border-r-2 border-[#1A1A1A] p-8 md:p-16 bg-[#F2F2F2]">
+            <h3 className="text-xl font-black uppercase mb-12 flex items-center gap-4">
+              <span className="w-4 h-4 bg-[#1A1A1A]"></span>
+              Competencies
+            </h3>
+
+            <div className="space-y-12">
+              <div>
+                <h4 className="text-4xl font-bold mb-6">Core Stack</h4>
+                <div className="flex flex-wrap gap-x-6 gap-y-2 text-xl font-medium text-stone-600">
+                  {skills.core.map((skill) => (
+                    <span
+                      key={skill}
+                      className="border-b border-stone-300 pb-1"
+                    >
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <h4 className="text-4xl font-bold mb-6">Tools</h4>
+                <p className="text-lg leading-relaxed text-stone-600">
+                  {skills.tools.join(", ")}.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          {/* Projects List */}
+          <section className="bg-white" id="work">
+            {projects.map((project, idx) => (
+              <div
+                key={project.id}
+                className="border-b-2 border-[#1A1A1A] group"
+              >
+                <div className="p-8 md:p-12 hover:bg-[#1A1A1A] hover:text-white transition-colors duration-300 cursor-pointer relative overflow-hidden">
+                  <div className="flex justify-between items-start relative z-10">
+                    <div>
+                      <span className="text-sm font-bold uppercase tracking-widest mb-2 block text-[#E63946]">
+                        Project 0{idx + 1}
+                      </span>
+                      <h3 className="text-4xl md:text-5xl font-black uppercase mb-4">
+                        {project.title}
+                      </h3>
+                      <p className="max-w-md text-sm md:text-base opacity-80 leading-relaxed group-hover:text-stone-300">
+                        {project.description}
+                      </p>
+                    </div>
+                    <div className="hidden md:block">
+                      <img
+                        src={project.assets.logo}
+                        alt=""
+                        className="w-12 h-12 object-contain bg-white rounded p-1"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="mt-8 flex gap-4 relative z-10">
+                    {project.links.map((link) => (
+                      <a
+                        key={link.label}
+                        href={link.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-xs font-bold uppercase border-b border-current pb-1 hover:text-[#E63946] transition-colors"
+                      >
+                        {link.label}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </section>
+        </div>
+
+        {/* Footer */}
+        <footer className="bg-[#E63946] text-white p-8 md:p-24" id="contact">
+          <div className="grid md:grid-cols-2 gap-12 items-end">
+            <div>
+              <h2 className="text-6xl md:text-8xl font-black leading-[0.8] mb-8">
+                LET'S
+                <br />
+                TALK
+              </h2>
+              <a
+                href="mailto:hello@example.com"
+                className="text-2xl font-bold border-b-4 border-white pb-2 hover:opacity-80 transition-opacity"
+              >
+                hello@example.com
+              </a>
+            </div>
+            <div className="flex flex-col gap-4">
+              {socialLinks.map((link) => (
+                <a
+                  key={link.name}
+                  href={link.url}
+                  className="text-xl font-bold hover:underline"
+                >
+                  {link.name}
+                </a>
+              ))}
+              <p className="mt-8 opacity-60 text-sm">
+                © {new Date().getFullYear()} Swiss Design System.
+              </p>
+            </div>
+          </div>
+        </footer>
+      </div>
+
+      {/* CSS for stroked text effect if needed, though often Tailwind handle standard styles. Adding custom class note: .stroked { -webkit-text-stroke: 1px #1A1A1A; } */}
+      <style>{`
+            .stroked {
+                -webkit-text-stroke: 2px #1A1A1A; 
+                color: transparent;
+            }
+        `}</style>
     </div>
   );
-}
+};
+
+export default SwissLayout;

@@ -1,226 +1,472 @@
-import { ArrowUpRight, ExternalLink } from "lucide-react";
+import { useState } from "react";
 import { profile, projects, skills, socialLinks } from "../../data";
-import { motion } from "framer-motion";
+import {
+  FileText,
+  Folder,
+  ChevronRight,
+  ChevronDown,
+  X,
+  Menu,
+  Search,
+  GitBranch,
+  Settings,
+} from "lucide-react";
 
-const BentoCard = ({
+const Syntax = ({
   children,
-  className = "",
-  span = "col-span-1",
+  color,
 }: {
   children: React.ReactNode;
-  className?: string;
-  span?: string;
+  color: string;
+}) => <span style={{ color }}>{children}</span>;
+
+const CodeLine = ({
+  num,
+  children,
+}: {
+  num: number;
+  children: React.ReactNode;
 }) => (
-  <motion.div
-    whileHover={{ scale: 1.01 }}
-    className={`bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col ${span} ${className}`}
-  >
-    {children}
-  </motion.div>
+  <div className="flex font-mono text-xs md:text-sm hover:bg-[#2d2d2d] leading-6">
+    <span className="w-8 md:w-12 text-gray-500 text-right pr-4 select-none">
+      {num}
+    </span>
+    <div className="whitespace-pre flex-1">{children}</div>
+  </div>
 );
 
-export default function Design4() {
-  return (
-    <div className="bg-gray-50 min-h-screen p-4 md:p-8 font-sans text-gray-900">
-      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-4 auto-rows-[minmax(180px,auto)]">
-        {/* Header / Profile */}
-        <BentoCard
-          span="md:col-span-2 md:row-span-2"
-          className="justify-between bg-zinc-900 text-white border-none!"
-        >
-          <div className="flex justify-between items-start">
-            <div className="flex items-center gap-3">
-              <img
-                src={profile.logo}
-                alt="Logo"
-                className="w-8 h-8 rounded-lg bg-zinc-800"
-              />
-              <h1 className="text-4xl font-bold tracking-tight">Ebuka.</h1>
-            </div>
-            <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-zinc-700">
-              <img
-                src={profile.avatar}
-                alt="Profile"
-                className="w-full h-full object-cover"
-              />
-            </div>
-          </div>
-          <div>
-            <h2 className="text-2xl font-medium mb-4 text-zinc-300">
-              Mobile Developer &<br />
-              PM
-            </h2>
-            <p className="text-zinc-400 text-sm max-w-sm">{profile.tagline}</p>
-          </div>
-        </BentoCard>
+const FileIcon = ({ name }: { name: string }) => {
+  if (name.endsWith(".tsx")) return <span className="text-blue-400">⚛️</span>;
+  if (name.endsWith(".ts")) return <span className="text-blue-500">TS</span>;
+  if (name.endsWith(".json"))
+    return <span className="text-yellow-400">{}</span>;
+  if (name.endsWith(".md")) return <span className="text-gray-400">ⓘ</span>;
+  return <FileText size={14} />;
+};
 
-        {/* Socials */}
-        <BentoCard
-          span="md:col-span-1"
-          className="bg-blue-500 text-white justify-center items-center gap-4 border-none!"
-        >
-          <h3 className="font-bold text-lg">Socials</h3>
-          <div className="flex gap-2">
-            {socialLinks.slice(0, 3).map((link) => (
-              <a
-                key={link.name}
-                href={link.url}
-                target="_blank"
-                rel="noreferrer"
-                className="p-2 bg-white/20 rounded-full hover:bg-white/30 transition-colors"
-              >
-                <link.icon size={18} />
-              </a>
-            ))}
-          </div>
-        </BentoCard>
+export default function DevIDE() {
+  const [activeFile, setActiveFile] = useState("profile.tsx");
+  const [openFiles, setOpenFiles] = useState([
+    "profile.tsx",
+    "projects.ts",
+    "skills.json",
+    "readme.md",
+  ]);
+  const [sidebarOpen] = useState(true);
 
-        {/* Resume */}
-        <BentoCard
-          span="md:col-span-1"
-          className="justify-center items-center hover:bg-zinc-50 cursor-pointer group"
-        >
-          <a
-            href={profile.resumeLink}
-            className="flex flex-col items-center gap-2"
-          >
-            <div className="w-12 h-12 rounded-full bg-zinc-100 flex items-center justify-center group-hover:bg-zinc-200 transition-colors">
-              <ArrowUpRight size={20} />
-            </div>
-            <span className="font-bold">Resume</span>
-          </a>
-        </BentoCard>
+  const handleFileClick = (file: string) => {
+    if (!openFiles.includes(file)) {
+      setOpenFiles([...openFiles, file]);
+    }
+    setActiveFile(file);
+  };
 
-        {/* Skills Marquee (Simulated) */}
-        <BentoCard
-          span="md:col-span-2"
-          className="justify-center overflow-hidden relative"
-        >
-          <h3 className="text-sm uppercase tracking-widest text-gray-500 mb-4 font-bold">
-            Stack
-          </h3>
-          <div className="flex flex-wrap gap-2">
-            {[...skills.core, ...skills.concepts].slice(0, 8).map((skill) => (
-              <span
-                key={skill}
-                className="px-3 py-1 bg-gray-100 rounded-lg text-xs font-medium text-gray-600"
-              >
-                {skill}
-              </span>
-            ))}
-            <span className="px-3 py-1 bg-gray-100 rounded-lg text-xs font-medium text-gray-400">
-              + more
-            </span>
-          </div>
-        </BentoCard>
+  const closeFile = (e: React.MouseEvent, file: string) => {
+    e.stopPropagation();
+    const newOpen = openFiles.filter((f) => f !== file);
+    setOpenFiles(newOpen);
+    if (activeFile === file && newOpen.length > 0) {
+      setActiveFile(newOpen[newOpen.length - 1]);
+    } else if (newOpen.length === 0) {
+      setActiveFile("");
+    }
+  };
 
-        {/* Project 1 */}
-        <BentoCard
-          span="md:col-span-2 md:row-span-2"
-          className="bg-indigo-50 p-0! overflow-hidden relative group border-none!"
-        >
-          <div className="absolute inset-x-0 bottom-0 p-6 bg-linear-to-t from-indigo-900/80 to-transparent z-10">
-            <div className="flex items-center gap-3 mb-2">
-              <img
-                src={projects[0].assets.logo}
-                alt=""
-                className="w-6 h-6 bg-white rounded-full p-0.5"
-              />
-              <h3 className="text-white font-bold text-2xl">
-                {projects[0].title}
-              </h3>
-            </div>
-            <p className="text-indigo-100 text-sm">{projects[0].description}</p>
-          </div>
-          <img
-            src={projects[0].assets.cover}
-            alt={projects[0].title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-          />
-        </BentoCard>
+  const renderFileContent = () => {
+    switch (activeFile) {
+      case "profile.tsx":
+        return (
+          <div className="p-4">
+            <CodeLine num={1}>
+              <Syntax color="#c586c0">import</Syntax> React{" "}
+              <Syntax color="#c586c0">from</Syntax>{" "}
+              <Syntax color="#ce9178">'react'</Syntax>;
+            </CodeLine>
+            <CodeLine num={2}>&nbsp;</CodeLine>
+            <CodeLine num={3}>
+              <Syntax color="#569cd6">export</Syntax>{" "}
+              <Syntax color="#569cd6">const</Syntax>{" "}
+              <Syntax color="#4ec9b0">Profile</Syntax> = (){" "}
+              <Syntax color="#569cd6">=&gt;</Syntax> (
+            </CodeLine>
+            <CodeLine num={4}>
+              &nbsp;&nbsp;<Syntax color="#808080">&lt;</Syntax>
+              <Syntax color="#569cd6">div</Syntax>{" "}
+              <Syntax color="#9cdcfe">className</Syntax>=
+              <Syntax color="#ce9178">"developer-card"</Syntax>
+              <Syntax color="#808080">&gt;</Syntax>
+            </CodeLine>
+            <CodeLine num={5}>
+              &nbsp;&nbsp;&nbsp;&nbsp;<Syntax color="#808080">&lt;</Syntax>
+              <Syntax color="#569cd6">img</Syntax>{" "}
+              <Syntax color="#9cdcfe">src</Syntax>=
+              <Syntax color="#ce9178">"{profile.avatar}"</Syntax>{" "}
+              <Syntax color="#9cdcfe">alt</Syntax>=
+              <Syntax color="#ce9178">"Me"</Syntax>{" "}
+              <Syntax color="#808080">/&gt;</Syntax>
+            </CodeLine>
+            <CodeLine num={6}>
+              &nbsp;&nbsp;&nbsp;&nbsp;<Syntax color="#808080">&lt;</Syntax>
+              <Syntax color="#569cd6">h1</Syntax>
+              <Syntax color="#808080">&gt;</Syntax>
+              {profile.name}
+              <Syntax color="#808080">&lt;/</Syntax>
+              <Syntax color="#569cd6">h1</Syntax>
+              <Syntax color="#808080">&gt;</Syntax>
+            </CodeLine>
+            <CodeLine num={7}>
+              &nbsp;&nbsp;&nbsp;&nbsp;<Syntax color="#808080">&lt;</Syntax>
+              <Syntax color="#569cd6">p</Syntax>
+              <Syntax color="#808080">&gt;</Syntax>
+              {profile.role}
+              <Syntax color="#808080">&lt;/</Syntax>
+              <Syntax color="#569cd6">p</Syntax>
+              <Syntax color="#808080">&gt;</Syntax>
+            </CodeLine>
+            <CodeLine num={8}>
+              &nbsp;&nbsp;&nbsp;&nbsp;<Syntax color="#808080">&lt;</Syntax>
+              <Syntax color="#569cd6">p</Syntax>{" "}
+              <Syntax color="#9cdcfe">className</Syntax>=
+              <Syntax color="#ce9178">"tagline"</Syntax>
+              <Syntax color="#808080">&gt;</Syntax>
+            </CodeLine>
+            <CodeLine num={9}>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"{profile.tagline}"
+            </CodeLine>
+            <CodeLine num={10}>
+              &nbsp;&nbsp;&nbsp;&nbsp;<Syntax color="#808080">&lt;/</Syntax>
+              <Syntax color="#569cd6">p</Syntax>
+              <Syntax color="#808080">&gt;</Syntax>
+            </CodeLine>
+            <CodeLine num={11}>
+              &nbsp;&nbsp;<Syntax color="#808080">&lt;/</Syntax>
+              <Syntax color="#569cd6">div</Syntax>
+              <Syntax color="#808080">&gt;</Syntax>
+            </CodeLine>
+            <CodeLine num={12}>);</CodeLine>
 
-        {/* Project 2 */}
-        <BentoCard
-          span="md:col-span-1 md:row-span-2"
-          className="justify-between bg-orange-50 p-0! overflow-hidden border-none! relative"
-        >
-          <div className="absolute top-0 left-0 right-0 p-4 z-10 flex justify-between items-center">
-            <span className="text-xs font-bold uppercase text-orange-900 bg-white/80 backdrop-blur-sm px-2 py-1 rounded">
-              {projects[1].title}
-            </span>
-            <a
-              href={projects[1].links[0]?.url}
-              className="text-white bg-black/20 p-1 rounded-full hover:bg-black/40"
-            >
-              <ExternalLink size={16} />
-            </a>
-          </div>
-          <img
-            src={projects[1].assets.cover}
-            alt={projects[1].title}
-            className="w-full h-full object-cover absolute inset-0"
-          />
-          <div className="absolute inset-x-0 bottom-0 p-4 bg-black/60 backdrop-blur-sm text-white">
-            <p className="text-xs font-medium leading-tight line-clamp-2">
-              {projects[1].description}
-            </p>
-          </div>
-        </BentoCard>
-
-        {/* More Projects List */}
-        <BentoCard
-          span="md:col-span-1 md:row-span-2"
-          className="overflow-y-auto"
-        >
-          <h3 className="font-bold mb-4 sticky top-0 bg-white pb-2">
-            More Work
-          </h3>
-          <div className="space-y-4">
-            {projects.slice(2).map((p) => (
-              <div
-                key={p.id}
-                className="pb-4 border-b border-gray-100 last:border-0 flex gap-3"
-              >
+            <div className="mt-8 p-4 bg-[#1e1e1e] border border-[#333] rounded">
+              <div className="flex gap-4 items-center">
                 <img
-                  src={p.assets.logo}
-                  alt=""
-                  className="w-10 h-10 rounded-lg bg-gray-100 object-contain border border-gray-200"
+                  src={profile.avatar}
+                  alt="Profile"
+                  className="w-20 h-20 rounded-full border-2 border-blue-500"
                 />
-                <div className="flex-1 min-w-0">
+                <div>
+                  <h1 className="text-2xl font-bold text-blue-400">
+                    {profile.name}
+                  </h1>
+                  <p className="text-gray-300">{profile.role}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      case "projects.ts":
+        return (
+          <div className="p-4">
+            <CodeLine num={1}>
+              <Syntax color="#569cd6">const</Syntax>{" "}
+              <Syntax color="#4ec9b0">projects</Syntax> = [
+            </CodeLine>
+            {projects.map((p, i) => (
+              <div key={p.id}>
+                <CodeLine num={2 + i * 8}>&nbsp;&nbsp;{"{"}</CodeLine>
+                <CodeLine num={3 + i * 8}>
+                  &nbsp;&nbsp;&nbsp;&nbsp;<Syntax color="#9cdcfe">id</Syntax>:{" "}
+                  <Syntax color="#ce9178">"{p.id}"</Syntax>,
+                </CodeLine>
+                <CodeLine num={4 + i * 8}>
+                  &nbsp;&nbsp;&nbsp;&nbsp;<Syntax color="#9cdcfe">title</Syntax>
+                  : <Syntax color="#ce9178">"{p.title}"</Syntax>,
+                </CodeLine>
+                <CodeLine num={5 + i * 8}>
+                  &nbsp;&nbsp;&nbsp;&nbsp;
+                  <Syntax color="#9cdcfe">description</Syntax>:{" "}
+                  <Syntax color="#ce9178">
+                    "{p.description.substring(0, 40)}..."
+                  </Syntax>
+                  ,
+                </CodeLine>
+                <CodeLine num={6 + i * 8}>
+                  &nbsp;&nbsp;&nbsp;&nbsp;<Syntax color="#9cdcfe">tags</Syntax>:
+                  [<Syntax color="#ce9178">"{p.tags.join('", "')}"</Syntax>],
+                </CodeLine>
+                <CodeLine num={7 + i * 8}>
+                  &nbsp;&nbsp;&nbsp;&nbsp;<Syntax color="#9cdcfe">url</Syntax>:{" "}
+                  <Syntax color="#ce9178">"{p.links[0]?.url}"</Syntax>
+                </CodeLine>
+                <CodeLine num={8 + i * 8}>&nbsp;&nbsp;{"},"}</CodeLine>
+              </div>
+            ))}
+            <CodeLine num={projects.length * 8 + 2}>];</CodeLine>
+
+            <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+              {projects.map((p) => (
+                <div
+                  key={p.id}
+                  className="bg-[#252526] p-4 rounded border border-[#333] hover:border-blue-500 cursor-pointer group"
+                >
+                  <div className="flex gap-4">
+                    <img
+                      src={p.assets.logo || p.assets.cover}
+                      className="w-12 h-12 object-cover rounded bg-black"
+                    />
+                    <div>
+                      <h3 className="text-blue-400 font-bold group-hover:underline">
+                        {p.title}
+                      </h3>
+                      <p className="text-xs text-gray-400 mt-1 line-clamp-2">
+                        {p.description}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      case "skills.json":
+        return (
+          <div className="p-4">
+            <CodeLine num={1}>{"{"}</CodeLine>
+            <CodeLine num={2}>
+              &nbsp;&nbsp;<Syntax color="#9cdcfe">"core"</Syntax>: [
+            </CodeLine>
+            {skills.core.map((s, i) => (
+              <CodeLine key={s} num={3 + i}>
+                &nbsp;&nbsp;&nbsp;&nbsp;<Syntax color="#ce9178">"{s}"</Syntax>,
+              </CodeLine>
+            ))}
+            <CodeLine num={3 + skills.core.length}>&nbsp;&nbsp;],</CodeLine>
+            <CodeLine num={4 + skills.core.length}>
+              &nbsp;&nbsp;<Syntax color="#9cdcfe">"tools"</Syntax>: [
+            </CodeLine>
+            {skills.tools.slice(0, 5).map((s, i) => (
+              <CodeLine key={s} num={5 + skills.core.length + i}>
+                &nbsp;&nbsp;&nbsp;&nbsp;<Syntax color="#ce9178">"{s}"</Syntax>,
+              </CodeLine>
+            ))}
+            <CodeLine num={5 + skills.core.length + 5}>&nbsp;&nbsp;]</CodeLine>
+            <CodeLine num={6 + skills.core.length + 5}>{"}"}</CodeLine>
+          </div>
+        );
+      case "readme.md":
+        return (
+          <div className="p-8 font-sans prose prose-invert max-w-none">
+            <h1 className="text-3xl font-bold mb-4">README.md</h1>
+            <p className="mb-4">
+              Welcome to my developer portfolio. This entire website is a
+              simulation of a coding environment.
+            </p>
+
+            <h2 className="text-xl font-bold mb-2">Contact Me</h2>
+            <ul className="list-disc pl-5 mb-4 space-y-2">
+              <li>
+                Email:{" "}
+                <a
+                  href="mailto:hello@example.com"
+                  className="text-blue-400 hover:underline"
+                >
+                  hello@example.com
+                </a>
+              </li>
+              {socialLinks.map((l) => (
+                <li key={l.name}>
+                  {l.name}:{" "}
                   <a
-                    href={p.links[0]?.url}
+                    href={l.url}
+                    className="text-blue-400 hover:underline"
                     target="_blank"
                     rel="noreferrer"
-                    className="block group"
                   >
-                    <h4 className="text-sm font-bold group-hover:text-blue-600 truncate">
-                      {p.title}
-                    </h4>
-                    <p className="text-xs text-gray-500 line-clamp-1">
-                      {p.description}
-                    </p>
+                    {l.url}
                   </a>
+                </li>
+              ))}
+            </ul>
+
+            <h2 className="text-xl font-bold mb-2">Installation</h2>
+            <div className="bg-[#1e1e1e] p-4 rounded font-mono text-sm">
+              npm install ebuka-portfolio
+              <br />
+              npm start
+            </div>
+          </div>
+        );
+      default:
+        return (
+          <div className="p-20 text-center text-gray-500">
+            Select a file from the explorer
+          </div>
+        );
+    }
+  };
+
+  return (
+    <div className="h-screen bg-[#1e1e1e] text-[#d4d4d4] flex flex-col font-sans overflow-hidden">
+      {/* Title Bar */}
+      <div className="h-8 bg-[#3c3c3c] flex justify-between items-center px-4 select-none text-xs">
+        <div className="flex gap-4">
+          <span className="font-bold">Visual Studio Code</span>
+          <span>File</span>
+          <span>Edit</span>
+          <span>Selection</span>
+          <span>View</span>
+          <span>Go</span>
+          <span>Run</span>
+          <span>Terminal</span>
+          <span>Help</span>
+        </div>
+        <div className="flex gap-2 text-gray-400">
+          <span>ebuka-portfolio [SSH: Remote]</span>
+        </div>
+        <div className="flex gap-2">
+          <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+          <div className="w-3 h-3 rounded-full bg-green-500"></div>
+          <div className="w-3 h-3 rounded-full bg-red-500"></div>
+        </div>
+      </div>
+
+      <div className="flex-1 flex overflow-hidden">
+        {/* Activity Bar */}
+        <div className="w-12 bg-[#333333] flex flex-col items-center py-4 gap-6 text-gray-400 select-none">
+          <FileText size={24} className="text-white cursor-pointer" />
+          <Search size={24} className="hover:text-white cursor-pointer" />
+          <GitBranch size={24} className="hover:text-white cursor-pointer" />
+          <div className="flex-1"></div>
+          <Settings size={24} className="hover:text-white cursor-pointer" />
+        </div>
+
+        {/* Sidebar */}
+        {sidebarOpen && (
+          <div className="w-64 bg-[#252526] flex flex-col border-r border-[#1e1e1e] select-none">
+            <div className="h-8 px-4 flex items-center justify-between text-xs font-bold uppercase tracking-wide text-gray-400 bg-[#252526]">
+              <span>Explorer</span>
+              <div className="flex gap-1">
+                <Menu size={14} className="cursor-pointer" />
+              </div>
+            </div>
+            <div className="flex-1 overflow-y-auto">
+              <div className="px-2 py-1 flex items-center gap-1 text-xs font-bold text-gray-300 cursor-pointer hover:bg-[#37373d]">
+                <ChevronDown size={14} />
+                <span>PORTFOLIO_V2</span>
+              </div>
+              <div className="pl-4">
+                {[".vscode", "node_modules", "public", "src"].map((folder) => (
+                  <div
+                    key={folder}
+                    className="px-2 py-1 flex items-center gap-1 text-sm text-gray-400 cursor-pointer hover:bg-[#2a2d2e]"
+                  >
+                    <ChevronRight size={14} />
+                    <Folder size={14} className="text-yellow-600" />
+                    <span>{folder}</span>
+                  </div>
+                ))}
+
+                <div className="px-2 py-1 flex items-center gap-1 text-sm text-gray-400 cursor-pointer hover:bg-[#2a2d2e]">
+                  <ChevronDown size={14} />
+                  <Folder size={14} className="text-blue-400" />
+                  <span>app</span>
                 </div>
+
+                {/* Files */}
+                {["profile.tsx", "projects.ts", "skills.json", "readme.md"].map(
+                  (file) => (
+                    <div
+                      key={file}
+                      onClick={() => handleFileClick(file)}
+                      className={`pl-8 px-2 py-1 flex items-center gap-2 text-sm cursor-pointer hover:bg-[#2a2d2e] ${activeFile === file ? "bg-[#37373d] text-white" : "text-gray-300"}`}
+                    >
+                      <FileIcon name={file} />
+                      <span>{file}</span>
+                    </div>
+                  ),
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Editor Area */}
+        <div className="flex-1 flex flex-col bg-[#1e1e1e] min-w-0">
+          {/* Tabs */}
+          <div className="h-9 bg-[#252526] flex overflow-x-auto select-none">
+            {openFiles.map((file) => (
+              <div
+                key={file}
+                onClick={() => setActiveFile(file)}
+                className={`flex items-center gap-2 px-3 min-w-[120px] max-w-[200px] border-r border-[#1e1e1e] text-sm cursor-pointer ${activeFile === file ? "bg-[#1e1e1e] text-white" : "bg-[#2d2d2d] text-gray-400"}`}
+              >
+                <FileIcon name={file} />
+                <span className="truncate">{file}</span>
+                <X
+                  size={14}
+                  className="ml-auto hover:bg-[#333] rounded p-0.5"
+                  onClick={(e) => closeFile(e, file)}
+                />
               </div>
             ))}
           </div>
-        </BentoCard>
 
-        {/* Footer area */}
-        <BentoCard
-          span="md:col-span-4"
-          className="bg-zinc-100 items-center justify-center py-12"
-        >
-          <h2 className="text-3xl font-bold text-zinc-900 mb-4">
-            Have an idea?
-          </h2>
-          <a
-            href="mailto:hello@example.com"
-            className="px-6 py-3 bg-zinc-900 text-white rounded-xl font-medium hover:bg-zinc-800 transition-colors"
-          >
-            Let's Build It
-          </a>
-        </BentoCard>
+          {/* Breadcrumbs */}
+          <div className="h-6 flex items-center px-4 text-xs text-gray-500 gap-2 bg-[#1e1e1e]">
+            <span>src</span>
+            <ChevronRight size={12} />
+            <span>app</span>
+            <ChevronRight size={12} />
+            <span>{activeFile}</span>
+          </div>
+
+          {/* Code Area */}
+          <div className="flex-1 overflow-auto relative font-mono">
+            {renderFileContent()}
+          </div>
+
+          {/* Terminal Panel */}
+          <div className="h-32 bg-[#1e1e1e] border-t border-[#333]">
+            <div className="flex gap-4 px-4 py-1 text-xs font-bold text-gray-400 border-b border-[#333]">
+              <span className="text-white border-b border-white pb-1">
+                TERMINAL
+              </span>
+              <span>OUTPUT</span>
+              <span>DEBUG CONSOLE</span>
+            </div>
+            <div className="p-2 font-mono text-sm text-gray-300">
+              <div className="flex gap-2">
+                <span className="text-green-500">➜</span>
+                <span className="text-blue-400">~/portfolio</span>
+                <span className="text-yellow-500">git status</span>
+              </div>
+              <div>On branch main</div>
+              <div>Your branch is up to date with 'origin/main'.</div>
+              <div className="mt-2 flex gap-2">
+                <span className="text-green-500">➜</span>
+                <span className="text-blue-400">~/portfolio</span>
+                <span className="animate-pulse">_</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Status Bar */}
+      <div className="h-6 bg-[#007acc] text-white flex justify-between items-center px-2 text-xs select-none">
+        <div className="flex gap-4">
+          <div className="flex items-center gap-1">
+            <GitBranch size={12} /> main
+          </div>
+          <div className="flex items-center gap-1">
+            <X size={12} /> 0
+          </div>
+          <div className="flex items-center gap-1">! 0</div>
+        </div>
+        <div className="flex gap-4">
+          <span>Ln 12, Col 34</span>
+          <span>UTF-8</span>
+          <span>TypeScript JSX</span>
+          <span>Prettier</span>
+        </div>
       </div>
     </div>
   );
