@@ -1,73 +1,54 @@
-# React + TypeScript + Vite
+# Onah's Portfolio ✨ <Vibe Coded>
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This repository contains a collection of **vibe-coded** website templates. It serves as an experimental playground for testing the front-end design capabilities of modern AI models and pushing the boundaries of generative UI.
 
-Currently, two official plugins are available:
+Explore different design iterations and aesthetic experiments by switching between the available branches.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## 🚀 Getting Started
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+To run the codebase locally and view the templates, follow these steps:
 
-## Expanding the ESLint configuration
+### Prerequisites
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **Node.js** (latest LTS recommended)
+- **npm**
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### Installation
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+```bash
+# Install dependencies
+npm install
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# Start the development server
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### 🏗️ Vibe Coding Your Own Portfolio
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+This project was built using the Gemini 3 Pro model integrated with Antigravity.
+To achieve high-fidelity designs, we utilize specialized skills for AI agents.
+
+1. Install Front-End Skills
+   To optimize your AI model's output, install the frontend-design skill from the Claude Team by running:
+
+```bash
+npx skills add [https://github.com/anthropics/skills](https://github.com/anthropics/skills) --skill frontend-design
 ```
+
+Note: After installation, ensure you select the specific agents you want to grant access to this skill.
+
+2. Customizing the Content
+   You can edit the content.md file with your own portfolio information, following the existing template structure.
+
+3. Prompting the Model
+   Once your content is ready, point your AI model to execute the prompt.md file. This file contains the instructions and constraints required to generate the front-end code based on your content.
+
+### 🛠️ Tech Stack
+
+Model: Gemini 3 Pro
+Orchestration: Antigravity
+Skills: Anthropic Frontend Design
