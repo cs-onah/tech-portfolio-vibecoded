@@ -28,12 +28,20 @@ function Home() {
           },
           { id: 2, name: "Swiss Style", desc: "Bold Typography & Grid" },
           { id: 3, name: "Retro OS", desc: "Windows 95 Aesthetics" },
-          { id: 4, name: "Developer IDE", desc: "VS Code Simulation" },
+          {
+            id: 4,
+            name: "Editorial / Magazine",
+            desc: "Serif Typography & Minimalism",
+          },
           { id: 5, name: "Cinematic", desc: "Immersive Parallax" },
-          { id: 6, name: "Game Console", desc: "Dashboard UI" },
+          { id: 6, name: "Fluid / Organic", desc: "Morphing Shapes & Blur" },
           { id: 7, name: "Scrapbook", desc: "Collage & Handwriting" },
           { id: 8, name: "Deconstructivist", desc: "Brutalist & Anti-Design" },
-          { id: 9, name: "Mobile OS", desc: "iOS Simulator" },
+          {
+            id: 9,
+            name: "Cyberpunk / Glitch",
+            desc: "Neon & Digital Corruption",
+          },
           { id: 10, name: "Blueprint", desc: "Technical Schematic" },
         ].map((design) => (
           <Link
